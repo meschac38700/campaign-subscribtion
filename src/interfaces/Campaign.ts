@@ -8,4 +8,5 @@ export default interface CampaignInterface {
     success: boolean;
     updated_at: string;
     created_at: string;
+    subscribers: number;
 }
