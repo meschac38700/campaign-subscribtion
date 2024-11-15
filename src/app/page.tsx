@@ -1,5 +1,5 @@
 import Image from "next/image";
-import CampaignList from "@/app/components/campaign/CampaignList";
+import CampaignList from "@/components/campaign/CampaignList";
 
 export default function Home() {
   return (

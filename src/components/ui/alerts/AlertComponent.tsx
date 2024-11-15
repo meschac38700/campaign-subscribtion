@@ -3,7 +3,7 @@ import {
     Alert,
     AlertDescription,
     AlertTitle, AlertVariants,
-} from "@/components/ui/alert"
+} from "@/components/ui/alerts/alert"
 import {forwardRef} from "react";
 import * as React from "react";
 import {VariantProps} from "class-variance-authority";

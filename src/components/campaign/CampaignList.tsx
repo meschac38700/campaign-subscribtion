@@ -1,9 +1,9 @@
 "use client";
 
-import Campaign from "@/app/components/campaign/Campaign";
+import Campaign from "@/components/campaign/Campaign";
 import CampaignInterface from "@/interfaces/Campaign";
 import useFetch from "@/hooks/useFetch";
-import AlertComponent from "@/app/components/wrappers/AlertComponent";
+import AlertComponent from "@/components/ui/alerts/AlertComponent";
 
 export default function CampaignList() {
     const {data, errors, isLoading} = useFetch<CampaignInterface[]>("/api/campaigns?page=1", [])
