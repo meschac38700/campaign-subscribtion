@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Image from "next/image";
+import {Toaster} from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <div className="app-container min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
         <main className="main">
           {children}
+          <Toaster />
         </main>
         <footer className="row-start-3 p-3 flex gap-6 flex-wrap items-center justify-center">
           <a
