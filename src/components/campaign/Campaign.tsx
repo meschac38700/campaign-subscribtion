@@ -1,10 +1,23 @@
+"use client";
+
 import CampaignInterface from "@/interfaces/Campaign";
 import {formatDatetime} from "@/lib/date_manipulations";
 import "./campaign.css"
+import {useCallback} from "react";
+import { useRouter } from 'next/navigation'
 
-export default function Campaign ({campaign}: {campaign:CampaignInterface}){
+type CampaignArgs = {
+    campaign:CampaignInterface,
+}
+
+export default function Campaign ({campaign}: CampaignArgs){
     const isSuccessClassName =  campaign.success ? "success" : "fail"
-    return <div className={"card campaign " + isSuccessClassName}>
+    const router = useRouter();
+    const redirectToSubscribeView = useCallback(() => {
+        router.push(`/campaigns/${campaign.slug}/subscribe`)
+    }, [])
+
+    return <div className={"card campaign " + isSuccessClassName} onClick={redirectToSubscribeView}>
         <div className="card-content">
             <div className="card-image"><img src={campaign.image} alt="Campaign image"/></div>
             <div className="card-main w-full">
