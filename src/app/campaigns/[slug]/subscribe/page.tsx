@@ -35,7 +35,7 @@ type SubscriptionResponse = {
 
 const formSubmissionHandler = async (values: z.infer<typeof formSchema>, slug: string) => {
     return await fetchJSON<SubscriptionResponse>(
-        `/api/campaigns/${slug}/subscribe`,
+        `/api/campaigns/${slug}/subscribers/`,
         {method: "POST", body: JSON.stringify(values)}
     )
 }
@@ -52,16 +52,18 @@ export default  function SubscribePage() {
     })
     const onSubmit =  async (values: z.infer<typeof formSchema>) => {
         const serverResponse = await formSubmissionHandler(values, slug)
-        if(serverResponse.status !== 200){
+        if(serverResponse.status !== 201){
             toast({
                 title: "Failed to subscribe",
                 description: `An error occurred during subscription operation, please try again later.`,
+                variant: "destructive"
             })
             return;
         }
         toast({
             title: "Successfully subscribed",
             description: `${values.email} successfully subscribed to "${slug}".`,
+            variant: "success",
         })
         router.push("/")
     }

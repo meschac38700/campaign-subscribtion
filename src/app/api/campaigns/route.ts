@@ -2,7 +2,7 @@ import CampaignInterface from "@/interfaces/Campaign";
 import {NextRequest, NextResponse} from "next/server";
 import fetchJSON from "@/utils/requests";
 
-const BACKEND_API_CAMPAIGN = "http://localhost:8000/api/campaigns";
+const BACKEND_API_CAMPAIGN = `${process.env.BACKEND_API}/campaigns`;
 
 export async function GET(request: NextRequest) {
     const qParams = request.nextUrl.searchParams
