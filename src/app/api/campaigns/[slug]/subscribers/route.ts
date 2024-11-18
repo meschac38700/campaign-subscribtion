@@ -4,7 +4,7 @@ import {cookies} from "next/headers";
 import fetchJSON from "@/utils/requests";
 
 
-type ErrorResponse = {
+export type ErrorResponse = {
     detail: string;
 }
 

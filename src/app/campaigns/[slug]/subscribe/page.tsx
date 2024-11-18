@@ -17,6 +17,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import fetchJSON from "@/utils/requests";
 import {useToast} from "@/hooks/use-toast";
 import {useParams, useRouter} from "next/navigation";
+import {ErrorResponse} from "@/app/api/campaigns/[slug]/subscribers/route";
+import SubscriberInterface from "@/interfaces/subscriber";
 
 
 const formSchema = z.object({
@@ -28,13 +30,8 @@ type FieldValues = {
     email: string;
 }
 
-type SubscriptionResponse = {
-    status: number,
-    json: { details?: string }
-}
-
 const formSubmissionHandler = async (values: z.infer<typeof formSchema>, slug: string) => {
-    return await fetchJSON<SubscriptionResponse>(
+    return await fetchJSON<Promise<ErrorResponse | SubscriberInterface>>(
         `/api/campaigns/${slug}/subscribers/`,
         {method: "POST", body: JSON.stringify(values)}
     )
@@ -55,7 +52,9 @@ export default  function SubscribePage() {
         if(serverResponse.status !== 201){
             toast({
                 title: "Failed to subscribe",
-                description: `An error occurred during subscription operation, please try again later.`,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                description: `An error occurred: ${serverResponse.json.detail}`,
                 variant: "destructive"
             })
             return;
