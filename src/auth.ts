@@ -15,21 +15,15 @@ import {SessionToken} from "@auth/core/lib/utils/cookie";
 type CredentialInputType = Partial<Record<"username" | "password", unknown>>
 type AuthResponseType = AuthTokenResponse | HttpErrorResponse
 
+
+const LOGIN_PATH = "/login"
 const AUTH_API = `${process.env.EXTERNAL_API}/token-auth/`
+const publicPages = [LOGIN_PATH, "/register", "logout", "/"];
 
 async function setAuthCookie(data: AuthTokenResponse){
     const cookieStore = await cookies()
     const maxAge = Number.parseInt(process.env.AUTH_TOKEN_LIFETIME || "350" )   - 60*5
     cookieStore.set(COOKIE_KEYS.ACCESS_TOKEN, data.token, {maxAge})
-}
-
-function extractNextUrl(url: string, baseUrl: string): string{
-    const urlParts = url.split("?next=")
-    const tmpUrl =  urlParts.at(-1)
-    if(tmpUrl && tmpUrl.includes("/login")){
-        return baseUrl
-    }
-    return urlParts.at(-1) ?? "/"
 }
 
 async function authorize(credentials: CredentialInputType):  Promise<AuthTokenResponse | null>  {
@@ -59,10 +53,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     // Utils links: https://github.com/nextauthjs/next-auth/issues/7645, https://next-auth.js.org/configuration/callbacks
-    callbacks: {
+    /*callbacks: {
         async jwt({token, account}) {
             const cookieStore = await cookies()
             const accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)
+            token.id = null
+            token.accessToken = null
             if (accessToken && account) {
                 token.id = account.providerAccountId
                 // Set DRF Access Token
@@ -71,13 +67,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return token
         },
         redirect: async function({url, baseUrl}) {
-            return extractNextUrl(url, baseUrl)
+            const _url = extractNextUrl(url, baseUrl)
+            return await checkForLoginRequired(_url)
         },
         async session({ session, token }: {session: SessionToken, token: JWT}) {
             // Send properties to the client, like an access_token and user id from a provider.
+            if(!token.accessToken)
+                return null
             session.accessToken = token.accessToken
             session.user.id = token.id
             return session
         }
-    }
+    }*/
 })

@@ -1,14 +1,15 @@
-import {NextRequest, NextResponse} from "next/server";
+import {NextResponse} from "next/server";
 import SubscriberInterface from "@/interfaces/subscriber";
 import {cookies} from "next/headers";
 import fetchJSON from "@/utils/requests";
 import {HttpErrorResponse} from "@/interfaces/http";
 import {COOKIE_KEYS} from "@/constants/cookies";
+import {auth} from "@/auth";
 
 
 const SUBSCRIBER_CREATE_API = `${process.env.EXTERNAL_API}/campaigns/[slug]/subscribers/create`;
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ slug: string }> }): Promise<NextResponse<HttpErrorResponse | SubscriberInterface>> {
+export async function POST(request: Request, { params }: { params: Promise<{ slug: string }> }): Promise<NextResponse<HttpErrorResponse | SubscriberInterface>> {
     const body = await request.json()
     const {slug} = await params
     const cookieStore = await cookies()
