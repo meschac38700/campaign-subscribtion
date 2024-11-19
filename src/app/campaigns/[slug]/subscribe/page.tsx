@@ -17,8 +17,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import fetchJSON from "@/utils/requests";
 import {useToast} from "@/hooks/use-toast";
 import {useParams, useRouter} from "next/navigation";
-import {ErrorResponse} from "@/app/api/campaigns/[slug]/subscribers/route";
 import SubscriberInterface from "@/interfaces/subscriber";
+import {HttpErrorResponse} from "@/interfaces/http";
 
 
 const formSchema = z.object({
@@ -31,13 +31,13 @@ type FieldValues = {
 }
 
 const formSubmissionHandler = async (values: z.infer<typeof formSchema>, slug: string) => {
-    return await fetchJSON<Promise<ErrorResponse | SubscriberInterface>>(
+    return await fetchJSON<Promise< HttpErrorResponse | SubscriberInterface>>(
         `/api/campaigns/${slug}/subscribers/`,
         {method: "POST", body: JSON.stringify(values)}
     )
 }
 
-export default  function SubscribePage() {
+export default function SubscribePage() {
     const { toast } = useToast()
     const {slug} = useParams<{ slug: string }>()
     const router = useRouter()
