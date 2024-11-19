@@ -5,6 +5,8 @@ import {NextAuthRequest} from "next-auth/lib";
 import {apiRoutes, authRoutes, DEFAULT_LOGIN_REDIRECT_URL, LOGIN_PATH, publicRoutes} from "../routes";
 
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 export default auth((req: NextAuthRequest) => {
     // Do whatever you want here, before the request is passed down to `NextAuth`
     const {nextUrl} = req

@@ -16,13 +16,12 @@ type CredentialInputType = Partial<Record<"username" | "password", unknown>>
 type AuthResponseType = AuthTokenResponse | HttpErrorResponse
 
 
-const LOGIN_PATH = "/login"
 const AUTH_API = `${process.env.EXTERNAL_API}/token-auth/`
-const publicPages = [LOGIN_PATH, "/register", "logout", "/"];
+const TOKEN_MAX_AGE = Number.parseInt(process.env.AUTH_TOKEN_LIFETIME || "350" )   - 60*5
 
 async function setAuthCookie(data: AuthTokenResponse){
     const cookieStore = await cookies()
-    const maxAge = Number.parseInt(process.env.AUTH_TOKEN_LIFETIME || "350" )   - 60*5
+    const maxAge = TOKEN_MAX_AGE
     cookieStore.set(COOKIE_KEYS.ACCESS_TOKEN, data.token, {maxAge})
 }
 
@@ -52,23 +51,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             authorize,
         }),
     ],
+    session: {
+      strategy: 'jwt',
+      maxAge: TOKEN_MAX_AGE
+    },
     // Utils links: https://github.com/nextauthjs/next-auth/issues/7645, https://next-auth.js.org/configuration/callbacks
-    /*callbacks: {
-        async jwt({token, account}) {
+    callbacks: {
+        async jwt({token}) {
             const cookieStore = await cookies()
             const accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)
-            token.id = null
-            token.accessToken = null
-            if (accessToken && account) {
-                token.id = account.providerAccountId
-                // Set DRF Access Token
-                token.accessToken = accessToken.value
+            if (!accessToken) {
+                return null
             }
+            // since we are using DRF Token et not jWT and prisma, instead of token.id= account.providerAccountId
+            token.id = token.email
+            // Set DRF Access Token
+            token.accessToken = accessToken.value
             return token
-        },
-        redirect: async function({url, baseUrl}) {
-            const _url = extractNextUrl(url, baseUrl)
-            return await checkForLoginRequired(_url)
         },
         async session({ session, token }: {session: SessionToken, token: JWT}) {
             // Send properties to the client, like an access_token and user id from a provider.
@@ -78,5 +77,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             session.user.id = token.id
             return session
         }
-    }*/
+    }
 })
