@@ -248,7 +248,6 @@ export interface DefaultSession {
 /** The active session of the logged in user. */
 export interface Session extends DefaultSession {
     accessToken: string;
-    user: User;
 }
 
 /**
