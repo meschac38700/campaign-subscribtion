@@ -5,6 +5,7 @@ export interface HttpErrorResponse {
 
 export interface AuthTokenResponse {
     token: string;
-    user_id: number;
+    id: number;
+    name: string;
     email: string;
 }

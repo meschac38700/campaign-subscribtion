@@ -69,6 +69,7 @@ import type {
     WebAuthnConfig,
     WebAuthnProviderType,
 } from "./providers/webauthn.js"
+import {AuthTokenResponse} from "@/interfaces/http";
 
 export type { WebAuthnOptionsResponseBody } from "./lib/utils/webauthn-utils.js"
 export type { AuthConfig } from "./index.js"
@@ -255,10 +256,10 @@ export interface Session extends DefaultSession {
  * available in the `jwt` and `session` callbacks,
  * or the second parameter of the `session` callback, when using a database.
  */
-export interface User {
-    token: string,
-    userId: string,
-    email: string,
+export interface User extends AuthTokenResponse {
+    id: number;
+    name: string;
+    email: string;
 }
 
 // Below are types that are only supposed be used by next-auth internally

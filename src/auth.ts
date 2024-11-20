@@ -16,7 +16,7 @@ type CredentialInputType = Partial<Record<"username" | "password", unknown>>
 type AuthResponseType = AuthTokenResponse | HttpErrorResponse
 
 
-const AUTH_API = `${process.env.EXTERNAL_API}/token-auth/`
+const AUTH_API = `${process.env.EXTERNAL_API}/token-auth/?reset=1`
 const TOKEN_MAX_AGE = Number.parseInt(process.env.AUTH_TOKEN_LIFETIME || "350" )   - 60*5
 
 async function setAuthCookie(data: AuthTokenResponse){
@@ -48,6 +48,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 username: { label: "Username" },
                 password: { label: "Password", type: "password" },
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             authorize,
         }),
     ],
@@ -74,7 +76,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if(!token.accessToken)
                 return null
             session.accessToken = token.accessToken
-            session.user.id = token.id
+            session.user.name = token.name
+            session.user.email = token.email
             return session
         }
     }
