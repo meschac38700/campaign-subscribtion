@@ -5,6 +5,7 @@ import Image from "next/image";
 import {Toaster} from "@/components/ui/toaster";
 import React from "react";
 import {SessionProvider} from "next-auth/react";
+import {Header} from "@/components/ui/Navigation/Header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en">
     <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
     >
+
       <div className="app-container min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
+        <Header/>
         <main className="main">
           <SessionProvider>
             {children}

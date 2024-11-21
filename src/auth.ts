@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       strategy: 'jwt',
       maxAge: TOKEN_MAX_AGE
     },
-    // Utils links: https://github.com/nextauthjs/next-auth/issues/7645, https://next-auth.js.org/configuration/callbacks
+    // Utils links: https://next-auth.js.org/configuration/callbacks
     callbacks: {
         async jwt({token}) {
             const cookieStore = await cookies()
