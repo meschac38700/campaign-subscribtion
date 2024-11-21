@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./css/leaflet/main.css";
 import Image from "next/image";
 import {Toaster} from "@/components/ui/toaster";
 import React from "react";
@@ -30,12 +31,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    <head>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossOrigin=""/>
+      <title>Simple react app</title>
+    </head>
     <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
     >
 
-      <div className="app-container min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
-        <Header/>
+    <div className="app-container min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
+    <Header/>
         <main className="main">
           <SessionProvider>
             {children}
@@ -92,5 +99,5 @@ export default function RootLayout({
       </div>
     </body>
     </html>
-);
+  );
 }
