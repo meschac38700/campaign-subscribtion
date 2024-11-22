@@ -11,6 +11,18 @@ export default function useLeafletMap(position: LatLngExpression, zoom: number){
     }, [position, zoom]);
 
     useEffect(() => {
+        if(!map) return;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        L.control.scale({
+            position: "topright",
+            maxWidth: 70,
+            metric: true,
+            imperial: false,
+        }).addTo(map)
+    }, [map]);
+
+    useEffect(() => {
         if(map)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
