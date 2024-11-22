@@ -1,27 +1,17 @@
 "use client";
-import {useEffect, useState} from "react";
-import {Layer} from "leaflet";
+import useLeafletMap from "@/hooks/map/use-leaflet-map";
+import {LatLngExpression} from "leaflet";
+import {useEffect} from "react";
 
+const GrenoblePosition: LatLngExpression = {lat: 45.166672, lng: 5.71667}
 export default function Page(){
-    const [layer, setLayer] = useState<Layer>();
-    const [map, setMap] = useState();
-    useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        setMap(L.map('map').setView([45.166672, 5.71667 ], 12));
-    }, []);
+    const {map} = useLeafletMap(GrenoblePosition, 12);
 
     useEffect(() => {
-        if(map)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        setLayer(L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map));
-
-        return () => {
-            layer?.remove()
+        if(map){
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+           // @ts-expect-error
+            L.marker(GrenoblePosition).bindPopup("Center of Grenoble city.").addTo(map)
         }
     }, [map]);
 
