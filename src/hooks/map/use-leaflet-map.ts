@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
-import {LatLngExpression, Layer} from "leaflet";
+import {LatLngExpression, Map, Layer} from "leaflet";
 
 export default function useLeafletMap(position: LatLngExpression, zoom: number){
     const [layer, setLayer] = useState<Layer>();
-    const [map, setMap] = useState();
+    const [map, setMap] = useState<Map>();
     useEffect(() => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
