@@ -12,6 +12,15 @@ export default function Page(){
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-expect-error
             L.marker(GrenoblePosition).bindPopup("Center of Grenoble city.").addTo(map)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            L.popup({
+                autoClose: false,
+                closeButton: false,
+                closeOnClick: false,
+            }).setLatLng([45.169570, 5.62897]).setContent(
+                `<img src="/2023-09-15.jpg" alt="image"><p>Indepence popup element.</p>`
+            ).openOn(map)
         }
     }, [map]);
 
