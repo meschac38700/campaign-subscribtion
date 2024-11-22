@@ -1,6 +1,7 @@
 import useFetch from "@/hooks/useFetch";
 import Establishment from "@/interfaces/establishment";
 import {LatLngExpression, LayerGroup, Map} from "leaflet";
+import {markerDivIcon, markerIcon} from "@/utils/maps";
 
 
 const API_URL = "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records?limit=100"
@@ -48,25 +49,26 @@ export function usePartialEstablishment(): PartialEstablishment[]{
 // @ts-expect-error
 export function getEstablishmentMarker(establishment: PartialEstablishment, L): L.Marker {
     // Icon get from: https://icones8.fr/icons/set/map-marker
-    let iconUrl = "https://img.icons8.com/windows/32/visit.png"
-    let iconSize = [32, 32]
-    let iconAnchor = [16, 32]
-    if(establishment.code_postal_uai.startsWith("01")){
-        iconUrl = "https://img.icons8.com/office/40/marker.png"
-        iconSize = [40, 40]
-        iconAnchor = [20, 40]
+    let icon = null
+    if(establishment.code_postal_uai.startsWith("03")){
+        icon = markerIcon(L, {
+            iconUrl: "https://img.icons8.com/office/40/marker.png",
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        })
     }
     else if(establishment.code_postal_uai.startsWith("02")){
-        iconUrl = "https://img.icons8.com/color/48/region-code.png"
-        iconSize = [48, 48]
-        iconAnchor = [24, 48]
+        icon = markerIcon(L, {
+            iconUrl: "https://img.icons8.com/color/48/region-code.png",
+            iconSize: [48, 48],
+            iconAnchor: [24, 48],
+        })
+    }else{
+        icon = markerDivIcon(L, {
+            className: "marker",
+            html: "<div class='pin'></div><div class='pulse'></div>"
+        })
     }
-    const icon = L.icon({
-        iconUrl,
-        iconSize,
-        iconAnchor,
-        popupAnchor: [0, iconSize[0] * -1],
-    })
     const m =  L.marker(establishment.position, {icon});
     m.bindPopup(`
     <div>
