@@ -43,10 +43,31 @@ export function usePartialEstablishment(): PartialEstablishment[]{
         } , defaultAcc)
     })
 }
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 export function getEstablishmentMarker(establishment: PartialEstablishment, L): L.Marker {
-    const m =  L.marker(establishment.position);
+    // Icon get from: https://icones8.fr/icons/set/map-marker
+    let iconUrl = "https://img.icons8.com/windows/32/visit.png"
+    let iconSize = [32, 32]
+    let iconAnchor = [16, 32]
+    if(establishment.code_postal_uai.startsWith("01")){
+        iconUrl = "https://img.icons8.com/office/40/marker.png"
+        iconSize = [40, 40]
+        iconAnchor = [20, 40]
+    }
+    else if(establishment.code_postal_uai.startsWith("02")){
+        iconUrl = "https://img.icons8.com/color/48/region-code.png"
+        iconSize = [48, 48]
+        iconAnchor = [24, 48]
+    }
+    const icon = L.icon({
+        iconUrl,
+        iconSize,
+        iconAnchor,
+        popupAnchor: [0, iconSize[0] * -1],
+    })
+    const m =  L.marker(establishment.position, {icon});
     m.bindPopup(`
     <div>
         <div><strong>${establishment.appellation_officielle}</strong></div>
