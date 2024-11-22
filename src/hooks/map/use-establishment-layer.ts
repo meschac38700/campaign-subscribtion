@@ -58,10 +58,9 @@ export function getEstablishmentMarker(establishment: PartialEstablishment, L): 
         })
     }
     else if(establishment.code_postal_uai.startsWith("02")){
-        icon = markerIcon(L, {
-            iconUrl: "https://img.icons8.com/color/48/region-code.png",
-            iconSize: [48, 48],
-            iconAnchor: [24, 48],
+        icon = icon = markerDivIcon(L, {
+            className: "marker",
+            html: "<div class='pin yellow'></div><div class='pulse'></div>"
         })
     }else{
         icon = markerDivIcon(L, {
