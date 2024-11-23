@@ -3,6 +3,51 @@
     height: 100%;
 }
 
+/**************************************************************************************************
+ **************************************** Legend styles ******************************************
+************************************************************************************************** */
+.map-legend{
+    background-color: #fefefe;
+    padding: .6rem 0;
+    min-width: 160px;
+    min-height: 160px;
+    border-radius: 5px;
+}
+
+.map-legend .map-legend-content{
+    display: flex;
+    flex-direction: column;
+    color: #111827;
+    width: 100%;
+    gap: .2rem;
+}
+.map-legend .map-legend-content .map-legend-title{
+    margin: 0 auto;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: .4rem;
+}
+.map-legend .map-legend-content > .map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .2rem .4rem;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+.map-legend .map-legend-content > .map-legend-item:hover{
+    background-color: #f0f0f0;
+}
+.map-legend .map-legend-content img{
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+
+/**************************************************************************************************
+ **************************************** Marker styles ******************************************
+************************************************************************************************** */
 .marker .pin{
     width: 30px;
     height: 30px;

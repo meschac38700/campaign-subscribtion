@@ -3,20 +3,27 @@ import useLeafletMap from "@/hooks/map/use-leaflet-map";
 import {LatLngExpression, LeafletMouseEvent, Map} from "leaflet";
 import {useCallback, useEffect} from "react";
 import  {getEstablishmentLayer, usePartialEstablishment} from "@/hooks/map/use-establishment-layer";
+import {mapLegendBuilder} from "@/lib/map";
 
 const GrenoblePosition: LatLngExpression = {lat: 45.166672, lng: 5.71667}
 
 export default function Page(){
 
     const legendCallback = useCallback((map: Map): string | HTMLElement => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const panelDiv = L.DomUtil.create("div", "panel");
-        panelDiv.id = "map-legend";
-        panelDiv.innerHTML = `<div><img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
-        <p>Camping spots</p>
-        </div>`;
-        return panelDiv
+        const builder = mapLegendBuilder({title: "Map Legend Title"})
+        let html = `
+            <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
+            <p>Park spots</p>
+        `
+        builder.addLegendRow({html})
+
+        html = `
+            <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
+            <p>Camping spots</p>
+        `
+        builder.addLegendRow({html})
+
+        return builder.create()
     }, [])
 
     const {map} = useLeafletMap(GrenoblePosition, 12, legendCallback);
