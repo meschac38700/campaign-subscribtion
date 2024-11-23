@@ -15,18 +15,31 @@ export default function Page(){
         const builder = mapLegendBuilder({title: "Map Legend Title"})
         const onClick = (element: HTMLDivElement) => {
             element.classList.toggle('active')
-        }
-        let html = `
-            <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
-            <p>Park spots</p>
-        `
-        builder.addLegendRow({html, onClick})
 
-        html = `
-            <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
-            <p>Camping spots</p>
+        }
+        const closeEstablishment = `
+            <img src="https://img.icons8.com/fluency-systems-filled/48/hotel-door-hanger.png" alt="">
+            <p class="legend-text">Établissements fermés</p>
         `
-        builder.addLegendRow({html, onClick})
+        builder.addLegendRow({html: closeEstablishment, onClick})
+
+        const openEstablishment = `
+            <img src="https://img.icons8.com/?size=100&id=3721&format=png&color=000000" alt="">
+            <p class="legend-text">Établissements ouvert</p>
+        `
+        builder.addLegendRow({html: openEstablishment, onClick})
+
+        const privateSector = `
+            <img src="https://img.icons8.com/color/48/private--v1.png" alt="">
+            <p class="legend-text">Secteur Privé</p>
+        `
+        builder.addLegendRow({html: privateSector, onClick})
+
+        const publicSector = `
+            <img src="https://img.icons8.com/ultraviolet/40/public.png" alt="">
+            <p class="legend-text">Secteur Public</p>
+        `
+        builder.addLegendRow({html: publicSector, onClick})
 
         return builder.create()
     }, [])
@@ -35,8 +48,8 @@ export default function Page(){
     const {data} = useFetch<PartialStaticPathsResult[] | null>("/api/gouv/establishments", null)
 
     useEffect(() => {
-        if(map){
-            if(data?.length){
+        if (map) {
+            if (data?.length){
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 const {layer} = getEstablishmentLayer(data, L, map)
@@ -53,12 +66,14 @@ export default function Page(){
                 `<img src="/2023-09-15.jpg" alt="image"><p>Indepence popup element.</p>`
             ).openOn(map)
 
-            map.on("click", (e: LeafletMouseEvent) => {
+            map.on("click", async (e: LeafletMouseEvent) => {
                 const pos = e.latlng
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-errorconst popup = L.popup().setContent(`Coord: ${e.latlng}`).openOn(map)
                 L.popup().setLatLng(pos).setContent(`Coord: ${pos}`).openOn(map)
-                navigator.clipboard.writeText(`[${pos.lat.toFixed(5)},${pos.lng.toFixed(5)}]`)
+                try{
+                    await navigator.clipboard.writeText(`[${pos.lat.toFixed(5)},${pos.lng.toFixed(5)}]`)
+                }catch(_: unknown){}
             })
         }
     }, [map, data]);

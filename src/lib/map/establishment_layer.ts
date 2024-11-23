@@ -1,7 +1,13 @@
 import {Map} from "leaflet";
 import {markerDivIcon, markerIcon} from "@/utils/maps";
+import {PartialEstablishment} from "@/interfaces/establishment";
 
 
+/**
+ * Build a marker and popup for the given establishment
+ * @param establishment
+ * @param L
+ */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 export function getEstablishmentMarker(establishment: PartialEstablishment, L): L.Marker {
@@ -28,8 +34,10 @@ export function getEstablishmentMarker(establishment: PartialEstablishment, L): 
     const m =  L.marker(establishment.position, {icon});
     m.bindPopup(`
     <div>
-        <div><strong>${establishment.appellation_officielle}</strong></div>
-        <div><span>${establishment.adresse_uai}, ${establishment.code_postal_uai} ${establishment.libelle_commune}</span></div>
+        <div><h4 style="font-weight: 700; font-size: 1rem; margin-bottom: 1rem;" class="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">${establishment.appellation_officielle}</h4></div>
+        <div><b>Adresse:</b> <span>${establishment.adresse_uai}, ${establishment.code_postal_uai} ${establishment.libelle_commune}</span></div>
+        <div><b>Etablissement:</b> <span>${establishment.etat_etablissement_libe}</span></div>
+        <div><b>Etablissement Secteur:</b> <span>${establishment.secteur_public_prive_libe}</span></div>
     </div>
     `)
     return m
@@ -51,8 +59,7 @@ export function getEstablishmentLayer(establishments: PartialEstablishment[], le
             const marker = getEstablishmentMarker(establishment, L)
             data.layer.addLayer(marker)
         }catch(error){
-            console.log(error)
-            debugger
+            console.error(error)
         }
         return data
 

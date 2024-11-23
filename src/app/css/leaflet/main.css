@@ -43,6 +43,9 @@
     background-color: rgba(76, 213, 255, 0.06);
     color: #037486;
 }
+.map-legend .map-legend-content .legend-text{
+    transform: translateY(10%);
+}
 .map-legend .map-legend-content > .map-legend-item:not(.active):hover{
     background-color: #f0f0f0;
 }

@@ -9,9 +9,12 @@ export default function useLeafletMap(
     const [layer, setLayer] = useState<Layer>();
     const [map, setMap] = useState<Map>();
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        setMap(L.map('map').setView(position, zoom));
+        try{
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setMap(L.map('map').setView(position, zoom));
+        }catch(_: unknown){}
+
     }, [position, zoom]);
 
     useEffect(() => {
