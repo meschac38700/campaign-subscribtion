@@ -1,10 +1,10 @@
 import useFetch from "@/hooks/useFetch";
 import Establishment from "@/interfaces/establishment";
-import {LatLngExpression, LayerGroup, Map} from "leaflet";
+import {Map} from "leaflet";
 import {markerDivIcon, markerIcon} from "@/utils/maps";
 
 
-const API_URL = "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records?limit=100"
+const API_URL = "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records?limit=100&order_by=libelle_departement&where=position is not null"
 
 const partialKeys = [
     "appellation_officielle",
@@ -50,22 +50,22 @@ export function usePartialEstablishment(): PartialEstablishment[]{
 export function getEstablishmentMarker(establishment: PartialEstablishment, L): L.Marker {
     // Icon get from: https://icones8.fr/icons/set/map-marker
     let icon = null
-    if(establishment.code_postal_uai.startsWith("03")){
-        icon = markerIcon(L, {
-            iconUrl: "https://img.icons8.com/office/40/marker.png",
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        })
-    }
-    else if(establishment.code_postal_uai.startsWith("02")){
+    if(establishment.code_postal_uai.startsWith("01")){
         icon = icon = markerDivIcon(L, {
             className: "marker",
             html: "<div class='pin yellow'></div><div class='pulse'></div>"
         })
-    }else{
+    }
+    else if(establishment.code_postal_uai.startsWith("02")){
         icon = markerDivIcon(L, {
             className: "marker",
             html: "<div class='pin'></div><div class='pulse'></div>"
+        })
+    }else{
+        icon = markerIcon(L, {
+            iconUrl: "https://img.icons8.com/office/40/marker.png",
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
         })
     }
     const m =  L.marker(establishment.position, {icon});
@@ -88,10 +88,16 @@ export function getEstablishmentLayer(establishments: PartialEstablishment[], le
     const layerGroup = new L.FeatureGroup().addTo(map)
 
     return establishments.reduce<ReturnType>((data, establishment) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const marker = getEstablishmentMarker(establishment, L)
-        data.layer.addLayer(marker)
+        try{
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const marker = getEstablishmentMarker(establishment, L)
+            data.layer.addLayer(marker)
+        }catch(error){
+            console.log(error)
+            debugger
+        }
         return data
+
     }, {layer: layerGroup})
 }
