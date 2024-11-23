@@ -39,19 +39,19 @@ export function mapLegendBuilder({title}: {title?: string}) {
         return legendTitle
     }
 
-    function addLegendRow({html, text, onClick}: {text?: string, html?: string, onClick?: (e: MouseEvent)=>void}) {
+    function addLegendRow({html, text, onClick}: {text?: string, html?: string, onClick?: (e: HTMLDivElement)=>void}) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         const legendRowItem = L.DomUtil.create("div", "map-legend-item");
         legendRowItem.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            onClick?.(e);
+            onClick?.(legendRowItem);
         })
         legendRowItem.addEventListener("dblclick", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            onClick?.(e);
+            onClick?.(legendRowItem);
         })
         if(html) legendRowItem.innerHTML = html
         if(text) legendRowItem.innerText = text

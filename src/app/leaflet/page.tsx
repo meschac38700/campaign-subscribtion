@@ -11,17 +11,20 @@ export default function Page(){
 
     const legendCallback = useCallback((map: Map): string | HTMLElement => {
         const builder = mapLegendBuilder({title: "Map Legend Title"})
+        const onClick = (element: HTMLDivElement) => {
+            element.classList.toggle('active')
+        }
         let html = `
             <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
             <p>Park spots</p>
         `
-        builder.addLegendRow({html})
+        builder.addLegendRow({html, onClick})
 
         html = `
             <img src="https://img.icons8.com/fluency/48/map-marker--v1.png" alt="">
             <p>Camping spots</p>
         `
-        builder.addLegendRow({html})
+        builder.addLegendRow({html, onClick})
 
         return builder.create()
     }, [])
