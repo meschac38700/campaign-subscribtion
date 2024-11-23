@@ -2,8 +2,10 @@
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
 import {LatLngExpression, LeafletMouseEvent, Map} from "leaflet";
 import {useCallback, useEffect} from "react";
-import  {getEstablishmentLayer, usePartialEstablishment} from "@/hooks/map/use-establishment-layer";
-import {mapLegendBuilder} from "@/lib/map";
+import useFetch from "@/hooks/useFetch";
+import {PartialStaticPathsResult} from "next/dist/build/utils";
+import {mapLegendBuilder} from "@/lib/map/legend";
+import {getEstablishmentLayer} from "@/lib/map/establishment_layer";
 
 const GrenoblePosition: LatLngExpression = {lat: 45.166672, lng: 5.71667}
 
@@ -30,11 +32,11 @@ export default function Page(){
     }, [])
 
     const {map} = useLeafletMap(GrenoblePosition, 12, legendCallback);
-    const data = usePartialEstablishment()
+    const {data} = useFetch<PartialStaticPathsResult[] | null>("/api/gouv/establishments", null)
 
     useEffect(() => {
         if(map){
-            if(data.length){
+            if(data?.length){
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 const {layer} = getEstablishmentLayer(data, L, map)

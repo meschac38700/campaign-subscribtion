@@ -1,49 +1,6 @@
-import useFetch from "@/hooks/useFetch";
-import Establishment from "@/interfaces/establishment";
 import {Map} from "leaflet";
 import {markerDivIcon, markerIcon} from "@/utils/maps";
 
-
-const API_URL = "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/records?limit=100&order_by=libelle_departement&where=position is not null"
-
-const partialKeys = [
-    "appellation_officielle",
-    "code_postal_uai",
-    "position",
-    "adresse_uai",
-    "libelle_commune"
-] as const;
-
-type K =  typeof partialKeys[number]
-type PartialEstablishment = Pick<Establishment, K>
-
-
-
-interface ApiResponse {
-    total_count: number;
-    results: Establishment[]
-}
-
-
-export function usePartialEstablishment(): PartialEstablishment[]{
-    const {data} = useFetch<ApiResponse | null>(API_URL, null)
-    if (data === null) { return [] }
-
-    return data.results.map(establishment => {
-
-        const defaultAcc = {
-            appellation_officielle: "", code_postal_uai: "", position: {lat: 0, lng: 0},
-            adresse_uai: "", libelle_commune: "",
-        }
-
-        return partialKeys.reduce<PartialEstablishment>((acc: PartialEstablishment, key: keyof PartialEstablishment) =>  {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            acc[key] = establishment[key];
-            return acc
-        } , defaultAcc)
-    })
-}
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
