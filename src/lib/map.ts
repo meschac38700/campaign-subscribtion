@@ -10,6 +10,11 @@ export function mapLegendBuilder({title}: {title?: string}) {
             legendContainer = L.DomUtil.create("div", "legend-container");
             legendContainer.className = "map-legend";
             legendContainer.id = "map-legend";
+
+            // block propagation of click, dlbclick events
+            // Prevent the click on the map when clicking on the legend panel
+            legendContainer.addEventListener("click", (e) => {e.stopPropagation()})
+            legendContainer.addEventListener("dblclick", (e) => {e.stopPropagation()})
         }
         return legendContainer
     }
