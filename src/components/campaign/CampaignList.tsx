@@ -2,7 +2,7 @@
 
 import Campaign from "@/components/campaign/Campaign";
 import CampaignInterface from "@/interfaces/Campaign";
-import useFetch from "@/hooks/useFetch";
+import useFetch from "@/hooks/use-fetch";
 import AlertComponent from "@/components/ui/alerts/AlertComponent";
 
 export default function CampaignList() {

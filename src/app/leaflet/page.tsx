@@ -2,7 +2,7 @@
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
 import {FeatureGroup, LatLngExpression, LayerGroup} from "leaflet";
 import {useEffect} from "react";
-import useFetch from "@/hooks/useFetch";
+import useFetch from "@/hooks/use-fetch";
 import {buildMapLegend} from "@/lib/map/legend";
 import {
     getBoundsOfMultipleLayerGroups,
