@@ -7,15 +7,20 @@ export default function useLeafletMap(
 ){
     const [map, setMap] = useState<Map>();
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const rootLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        })
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        setMap(L.map('map', {layers: [rootLayer]}).setView(position, zoom));
+        try{
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const rootLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            })
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setMap(L.map('map', {layers: [rootLayer]}).setView(position, zoom));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        }catch(_: unknown){
+            window.location.reload();
+        }
     }, [position, zoom]);
 
     useEffect(() => {
