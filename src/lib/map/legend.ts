@@ -45,7 +45,7 @@ export function mapLegendBuilder({title}: {title?: string}) {
     function addLegendRow({html, text, onClick}: {text?: string, html?: string, onClick?: (e: HTMLDivElement)=>void}) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        const legendRowItem = L.DomUtil.create("div", "map-legend-item active");
+        const legendRowItem = L.DomUtil.create("div", "map-legend-item ");
         legendRowItem.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();

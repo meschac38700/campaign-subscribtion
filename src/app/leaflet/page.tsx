@@ -1,6 +1,6 @@
 "use client";
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
-import {FeatureGroup, LatLngExpression, LayerGroup, LeafletMouseEvent} from "leaflet";
+import {FeatureGroup, LatLngExpression, LayerGroup} from "leaflet";
 import {useEffect} from "react";
 import useFetch from "@/hooks/useFetch";
 import {buildMapLegend} from "@/lib/map/legend";
@@ -29,10 +29,10 @@ export default function Page(){
 
                 // Create map legend
                 const legendDescriptions = {
-                    closed: {text: "Établissement fermés", img: "https://img.icons8.com/fluency-systems-filled/48/hotel-door-hanger.png"},
-                    opened: {text: "Établissement ourvers", img: "https://img.icons8.com/?size=100&id=3721&format=png&color=000000"},
-                    private: {text: "Établissement privés", img: "https://img.icons8.com/color/48/private--v1.png"},
-                    public: {text: "Établissement publics", img: "https://img.icons8.com/ultraviolet/40/public.png"},
+                    closed: {text: `Établissement fermés (${layers['closed'].getLayers().length})`, img: "https://img.icons8.com/fluency-systems-filled/48/hotel-door-hanger.png"},
+                    opened: {text: `Établissement ourvers (${layers['opened'].getLayers().length})`, img: "https://img.icons8.com/?size=100&id=3721&format=png&color=000000"},
+                    private: {text: `Établissement privés (${layers['private'].getLayers().length})`, img: "https://img.icons8.com/color/48/private--v1.png"},
+                    public: {text: `Établissement publics (${layers['public'].getLayers().length})`, img: "https://img.icons8.com/ultraviolet/40/public.png"},
                 }
                 // TODO(Eliam): Review legend filter logic, Using AND operator instead the default OR
                 buildMapLegend({map, layers, legendDescriptions})
