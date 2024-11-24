@@ -77,7 +77,6 @@ export function getEstablishmentLayers(establishments: PartialEstablishment[], L
     }
     return establishments.reduce((data, establishment) => {
         const marker = getEstablishmentMarker(establishment, L)
-        console.log(marker)
         if(establishment.etat_etablissement_libe === "OUVRIR"){
             data.closed.addLayer(marker)
         }else{

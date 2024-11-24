@@ -58,7 +58,7 @@ export interface EstablishmentApiResponse {
 
 
 type LayersObject = {
-    [name: string]: Layer
+    [name: string]: FeatureGroup<LayerGroup>
 }
 
 export interface EstablishmentLayers extends LayersObject{
