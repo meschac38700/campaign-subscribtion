@@ -1,11 +1,14 @@
 "use client";
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
-import {LatLngExpression, LeafletMouseEvent, Map} from "leaflet";
+import {FeatureGroup, LatLngExpression, LayerGroup, Map} from "leaflet";
 import {useCallback, useEffect} from "react";
 import useFetch from "@/hooks/useFetch";
-import {PartialStaticPathsResult} from "next/dist/build/utils";
 import {mapLegendBuilder} from "@/lib/map/legend";
-import {getEstablishmentLayer} from "@/lib/map/establishment_layer";
+import {
+    getBoundsOfMultipleLayerGroups,
+    getEstablishmentLayers
+} from "@/lib/map/establishment_layer";
+import {PartialEstablishment} from "@/interfaces/establishment";
 
 const GrenoblePosition: LatLngExpression = {lat: 45.166672, lng: 5.71667}
 
@@ -43,20 +46,26 @@ export default function Page(){
 
         return builder.create()
     }, [])
-
     const {map} = useLeafletMap(GrenoblePosition, 12, legendCallback);
-    const {data} = useFetch<PartialStaticPathsResult[] | null>("/api/gouv/establishments", null)
+    const {data} = useFetch<PartialEstablishment[] | null>("/api/gouv/establishments", null)
 
     useEffect(() => {
         if (map) {
             if (data?.length){
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
-                const {layer} = getEstablishmentLayer(data, L, map)
-                layer.addTo(map)
-                map.fitBounds(layer.getBounds())
+                const layers = getEstablishmentLayers(data, L, map)
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                const layerControl = L.control.layers(undefined, layers, {hideSingleBase: true}).addTo(map);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                // const {layer} = getEstablishmentLayer(data, L, map)
+                //layer.addTo(map)
+                const layerGroups = Object.values<FeatureGroup<LayerGroup>>(layers)
+                map.fitBounds(getBoundsOfMultipleLayerGroups(layerGroups))
             }
-
+            /*
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-expect-error
             L.marker(GrenoblePosition).bindPopup("Center of Grenoble city.").addTo(map)
@@ -74,7 +83,7 @@ export default function Page(){
                 try{
                     await navigator.clipboard.writeText(`[${pos.lat.toFixed(5)},${pos.lng.toFixed(5)}]`)
                 }catch(_: unknown){}
-            })
+            })*/
         }
     }, [map, data]);
 

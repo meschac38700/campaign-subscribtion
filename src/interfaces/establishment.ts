@@ -1,4 +1,4 @@
-import {LatLngExpression} from "leaflet";
+import {FeatureGroup, LatLngExpression, Layer, LayerGroup} from "leaflet";
 
 export default interface Establishment {
     numero_uai: string;
@@ -54,4 +54,16 @@ export type PartialEstablishment = Pick<Establishment, K>
 export interface EstablishmentApiResponse {
     total_count: number;
     results: Establishment[]
+}
+
+
+type LayersObject = {
+    [name: string]: Layer
+}
+
+export interface EstablishmentLayers extends LayersObject{
+    private: FeatureGroup<LayerGroup>,
+    public: FeatureGroup<LayerGroup>,
+    opened: FeatureGroup<LayerGroup>,
+    closed: FeatureGroup<LayerGroup>,
 }

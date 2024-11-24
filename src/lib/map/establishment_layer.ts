@@ -1,6 +1,6 @@
-import {Map} from "leaflet";
+import {FeatureGroup, LatLngBounds, LayerGroup, Map} from "leaflet";
 import {markerDivIcon, markerIcon} from "@/utils/maps";
-import {PartialEstablishment} from "@/interfaces/establishment";
+import {EstablishmentLayers, PartialEstablishment} from "@/interfaces/establishment";
 
 
 /**
@@ -64,4 +64,39 @@ export function getEstablishmentLayer(establishments: PartialEstablishment[], le
         return data
 
     }, {layer: layerGroup})
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+export function getEstablishmentLayers(establishments: PartialEstablishment[], L, map: Map): EstablishmentLayers {
+    const defaultData: EstablishmentLayers = {
+        closed: new L.FeatureGroup().addTo(map),
+        opened: new L.FeatureGroup().addTo(map),
+        public: new L.FeatureGroup().addTo(map),
+        private: new L.FeatureGroup().addTo(map),
+    }
+    return establishments.reduce((data, establishment) => {
+        const marker = getEstablishmentMarker(establishment, L)
+        console.log(marker)
+        if(establishment.etat_etablissement_libe === "OUVRIR"){
+            data.closed.addLayer(marker)
+        }else{
+            data.opened.addLayer(marker)
+        }
+
+        if(establishment.secteur_public_prive_libe === "Public"){
+            data.public.addLayer(marker)
+        }else{
+            data.private.addLayer(marker)
+        }
+        return data
+    }, defaultData)
+}
+
+export function getBoundsOfMultipleLayerGroups(layerGroups: FeatureGroup<LayerGroup>[]): LatLngBounds {
+    const latLngBounds = layerGroups[0].getBounds()
+    layerGroups.slice(1).forEach(layer => {
+        latLngBounds.extend(layer.getBounds())
+    })
+    return latLngBounds
 }
