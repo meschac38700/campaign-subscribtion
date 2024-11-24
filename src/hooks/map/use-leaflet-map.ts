@@ -1,19 +1,21 @@
 import {useEffect, useState} from "react";
-import {LatLngExpression, Map, Layer} from "leaflet";
+import {LatLngExpression, Map} from "leaflet";
 
 export default function useLeafletMap(
     position: LatLngExpression,
     zoom: number,
 ){
-    const [layer, setLayer] = useState<Layer>();
     const [map, setMap] = useState<Map>();
     useEffect(() => {
-        try{
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            setMap(L.map('map').setView(position, zoom));
-        }catch(_: unknown){}
-
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const rootLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        setMap(L.map('map', {layers: [rootLayer]}).setView(position, zoom));
     }, [position, zoom]);
 
     useEffect(() => {
@@ -29,15 +31,5 @@ export default function useLeafletMap(
 
     }, [map]);
 
-    useEffect(() => {
-        if(map)
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            setLayer(L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map));
-    }, [map]);
-
-    return {map, rootLayer: layer};
+    return map;
 }

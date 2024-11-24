@@ -13,7 +13,7 @@ import {PartialEstablishment} from "@/interfaces/establishment";
 const GrenoblePosition: LatLngExpression = {lat: 45.166672, lng: 5.71667}
 
 export default function Page(){
-    const {map} = useLeafletMap(GrenoblePosition, 12);
+    const map = useLeafletMap(GrenoblePosition, 12);
     const {data} = useFetch<PartialEstablishment[] | null>("/api/gouv/establishments", null)
 
     useEffect(() => {
