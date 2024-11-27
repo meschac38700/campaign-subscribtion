@@ -51,7 +51,7 @@ export function markerDivIcon(L, options: Options | null = {}) {
 export function getUserPosition(successCallback: (coords: LatLngLiteral) => void, errorCallback?:PositionErrorCallback | null): void {
     navigator.geolocation.getCurrentPosition(
         (position) => {
-             successCallback({
+            successCallback({
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             })

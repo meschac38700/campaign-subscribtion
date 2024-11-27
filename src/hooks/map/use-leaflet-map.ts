@@ -12,6 +12,10 @@ function centerOnUserPosition(setterCallback: StateFn, prevCoords?: LatLngLitera
 
     getUserPosition((coords) => {
         setterCallback(prevValue => ({...prevValue, ...coords}))
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }, (_) => {
+        // set to Grenoble coordinates
+        setterCallback({lat: 45.166672, lng: 5.71667})
     })
 }
 
