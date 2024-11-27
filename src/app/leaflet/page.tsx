@@ -1,7 +1,7 @@
 "use client";
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
-import {FeatureGroup, LatLngLiteral, LayerGroup} from "leaflet";
-import {useEffect} from "react";
+import {FeatureGroup, LayerGroup, Map} from "leaflet";
+import {useCallback, useEffect} from "react";
 import useFetch from "@/hooks/use-fetch";
 import {addLegend} from "@/lib/map/legend";
 import {
@@ -9,7 +9,23 @@ import {
     getEstablishmentLayers
 } from "@/lib/map/establishment_layer";
 import {PartialEstablishment} from "@/interfaces/establishment";
+import {getUserPosition, markerIcon} from "@/utils/maps";
 
+const markCurrentUserPosition = (map: Map) => {
+    getUserPosition((userPosition) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const icon = markerIcon(L, {
+            iconUrl: "https://img.icons8.com/color/48/i-pronoun.png",
+            iconSize: [48, 48],
+            iconAnchor: [24, 48],
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        L.marker(userPosition, {icon}).addTo(map)
+
+    })
+}
 
 export default function Page(){
     const map = useLeafletMap(12);
@@ -25,6 +41,7 @@ export default function Page(){
                 const layerGroups = Object.values<FeatureGroup<LayerGroup>>(layers)
                 map.fitBounds(getBoundsOfMultipleLayerGroups(layerGroups))
             }
+            markCurrentUserPosition(map)
         }
     }, [map, data]);
 
