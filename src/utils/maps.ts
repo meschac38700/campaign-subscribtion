@@ -1,3 +1,5 @@
+import {LatLngLiteral} from "leaflet";
+
 type Options = {
     iconUrl?: string;
     iconSize?: number[];
@@ -44,4 +46,34 @@ export function markerDivIcon(L, options: Options | null = {}) {
         }
     }
     return L.divIcon(_options)
+}
+
+export function getUserPosition(successCallback: (coords: LatLngLiteral) => void, errorCallback?:PositionErrorCallback | null): void {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            console.log("-------------------------------------")
+            console.log(position.coords)
+            console.log("-------------------------------------")
+             successCallback({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
+        },
+        (err) => errorCallback?.(err),
+    )
+}
+
+export function watchUserPosition(successCallback: (coords: LatLngLiteral) => void, errorCallback?:PositionErrorCallback | null): number{
+    return navigator.geolocation.watchPosition(
+        (position) => {
+            console.log("Watch position:-------------------------------------")
+            console.log(position.coords)
+            console.log("-------------------------------------")
+            successCallback({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
+        },
+        (err) => errorCallback?.(err),
+    )
 }

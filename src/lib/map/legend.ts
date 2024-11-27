@@ -149,3 +149,20 @@ export function buildMapLegend({map, layers, position="bottomright", legendDescr
     legendElement.onAdd = builder.create
     legendElement.addTo(map);
 }
+
+export function addLegend(map: Map, layers: EstablishmentLayers) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const layerControl = L.control.layers(undefined, layers, {collapsed: false}).addTo(map);
+    map.removeControl(layerControl)
+
+    // Create map legend
+    const legendDescriptions = {
+        closed: {text: `Établissement fermés (${layers['closed'].getLayers().length})`, img: "https://img.icons8.com/fluency-systems-filled/48/hotel-door-hanger.png"},
+        opened: {text: `Établissement ourvers (${layers['opened'].getLayers().length})`, img: "https://img.icons8.com/?size=100&id=3721&format=png&color=000000"},
+        private: {text: `Établissement privés (${layers['private'].getLayers().length})`, img: "https://img.icons8.com/color/48/private--v1.png"},
+        public: {text: `Établissement publics (${layers['public'].getLayers().length})`, img: "https://img.icons8.com/ultraviolet/40/public.png"},
+    }
+    // TODO(Eliam): Review legend filter logic, Using AND operator instead the default OR
+    buildMapLegend({map, layers, legendDescriptions})
+}
