@@ -1,31 +1,29 @@
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {LatLngLiteral, Map} from "leaflet";
 import {getUserPosition} from "@/utils/maps";
-import {round_number} from "@/lib/round_number";
 
 
-type StateFn = Dispatch<SetStateAction<LatLngLiteral | null>>
+type StateFn = Dispatch<SetStateAction<LatLngLiteral | undefined>>
 
-function centerOnUserPosition(setterCallback: StateFn, prevCoords: LatLngLiteral | null) {
+function centerOnUserPosition(setterCallback: StateFn, prevCoords?: LatLngLiteral) {
+    if(prevCoords){
+        return
+    }
+
     getUserPosition((coords) => {
-        const current_lat = round_number(coords.lat)
-        const current_lng = round_number(coords.lng)
-
-        const prevCoords_lat = round_number(prevCoords?.lat ?? 0)
-        const prevCoords_lng = round_number(prevCoords?.lng ?? 0)
-        if(current_lat !== prevCoords_lat || current_lng !== prevCoords_lng)
-            setterCallback(coords)
+        setterCallback(prevValue => ({...prevValue, ...coords}))
     })
 }
 
 export default function useLeafletMap(
-    position: LatLngLiteral | null,
     zoom: number,
+    position?: LatLngLiteral,
 ){
-    const [userPosition, setUserPosition] = useState<LatLngLiteral | null>(position)
+    const [userPosition, setUserPosition] = useState<LatLngLiteral | undefined>(position)
     const [map, setMap] = useState<Map>();
     useEffect(() => {
         centerOnUserPosition(setUserPosition, userPosition)
+        if(!userPosition) return
 
         try{
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

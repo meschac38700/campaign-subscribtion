@@ -51,9 +51,6 @@ export function markerDivIcon(L, options: Options | null = {}) {
 export function getUserPosition(successCallback: (coords: LatLngLiteral) => void, errorCallback?:PositionErrorCallback | null): void {
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            console.log("-------------------------------------")
-            console.log(position.coords)
-            console.log("-------------------------------------")
              successCallback({
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -66,9 +63,6 @@ export function getUserPosition(successCallback: (coords: LatLngLiteral) => void
 export function watchUserPosition(successCallback: (coords: LatLngLiteral) => void, errorCallback?:PositionErrorCallback | null): number{
     return navigator.geolocation.watchPosition(
         (position) => {
-            console.log("Watch position:-------------------------------------")
-            console.log(position.coords)
-            console.log("-------------------------------------")
             successCallback({
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
