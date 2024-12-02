@@ -147,3 +147,19 @@
         transform: translateY(0) rotate(-45deg);
     }
 }
+
+/**************************************************************************************************
+ **************************************** Legend button styles ************************************
+************************************************************************************************** */
+.legend{
+    background-color: #fefefe;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+.legend button {
+    background-color: #22262c;
+    color: white;
+    padding: 1rem 2rem;
+    margin: 0 .5rem;
+    border-radius: 2rem;
+}
