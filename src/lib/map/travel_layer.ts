@@ -1,4 +1,4 @@
-import {FeatureGroup, Icon, Map, Marker} from "leaflet";
+import {FeatureGroup, Icon, Map, Marker, Layer, LatLngExpression} from "leaflet";
 import Travel from "@/interfaces/travel";
 import {markerIcon} from "@/utils/maps";
 
@@ -36,8 +36,16 @@ export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (l
     control.addTo(map);
 }
 
+interface LayerFixed extends Layer {
+    getLatLng: () => LatLngExpression;
+    getIcon: () => Icon;
+    setIcon: (icon: Icon) => void;
+}
+
 export function moveMap(map: Map, index: number, layers: LayerType, zoom: number=6) {
-    const travelPoint = layers.getLayers()[index]
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const travelPoint: LayerFixed = layers.getLayers()[index]
 
     map.flyTo(travelPoint.getLatLng(), zoom)
     map.once("moveend", function() {

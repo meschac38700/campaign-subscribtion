@@ -16,15 +16,14 @@ export default function Page(){
         if(!map) return
 
         const nextIndex = (index + 1 ) % (data?.length || 0)
-        console.log("N:", index, nextIndex)
         index = nextIndex
         moveMap(map, nextIndex, layers)
     }, [map, data])
     const prevCallback = useCallback((layers: FeatureGroup) => {
         if(!map) return
+
         const dataLength = data?.length || 1
         const nextIndex = (index - 1 + dataLength ) % dataLength
-        console.log("P:", index, nextIndex)
         index = nextIndex
         moveMap(map, nextIndex, layers)
     }, [map, data])
