@@ -57,9 +57,9 @@ export function moveMap(map: Map, index: number, layers: LayerType, zoom: number
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-function getMarker(data: Travel, L): Marker{
+function getMarker(data: Travel, L, iconUrl?: string): Marker{
     const icon = markerIcon(L, {
-        iconUrl: "https://img.icons8.com/stickers/50/active-state.png",
+        iconUrl: iconUrl ?? "https://img.icons8.com/stickers/50/active-state.png",
         iconSize: [50, 50],
         iconAnchor:[25,50]
     })
@@ -71,8 +71,15 @@ function getMarker(data: Travel, L): Marker{
 // @ts-expect-error
 export function getTravelLayers(data: Travel[], L, map: Map): LayerType {
     const defaultData: LayerType = new L.FeatureGroup().addTo(map)
-    return data.reduce((accumulator, travel) => {
-        defaultData.addLayer(getMarker(travel, L))
+    return data.reduce((accumulator, travel, index, arr) => {
+        let iconUrl = undefined
+        const last = arr[arr.length - 1]
+        const first = arr[0]
+        const sameCoords = last.lat === first.lat && last.lng === first.lng
+        if(index === 0 || (index == arr.length - 1 && sameCoords) )
+            iconUrl = "https://img.icons8.com/stickers/50/user-male-circle-skin-type-3.png"
+
+        defaultData.addLayer(getMarker(travel, L, iconUrl))
         return defaultData
     }, defaultData)
 }
