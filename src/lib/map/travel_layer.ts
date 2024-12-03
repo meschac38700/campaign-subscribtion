@@ -1,6 +1,6 @@
 import {FeatureGroup, Icon, Map, Marker, LatLngExpression, MarkerOptions} from "leaflet";
 import Travel from "@/interfaces/travel";
-import {hasSameCoords, markerIcon} from "@/utils/maps";
+import {markerIcon} from "@/utils/maps";
 import {LayerFixed} from "@/interfaces/maps";
 import {Dispatch, SetStateAction} from "react";
 import {preventClickBehaviour} from "@/utils/click-vents";
