@@ -1,8 +1,10 @@
-import {Icon, LatLngExpression, Layer} from "leaflet";
+import {Icon, LatLngLiteral, Layer} from "leaflet";
 
 export interface LayerFixed extends Layer {
-    getLatLng: () => LatLngExpression;
+    getLatLng: () => LatLngLiteral;
     getIcon: () => Icon;
     setIcon: (icon: Icon) => void;
     getLayers: () => Layer[];
+    _zIndex: number;
+    _bringToFront: () => void;
 }

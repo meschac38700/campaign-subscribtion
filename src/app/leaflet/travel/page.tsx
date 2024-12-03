@@ -21,16 +21,16 @@ export default function Page(){
         if(!map) return
 
         const nextIndex = (index + 1 ) % (data?.length || 0)
+        moveMap(map, nextIndex, layers, setCurrentLayer, index)
         index = nextIndex
-        moveMap(map, nextIndex, layers, setCurrentLayer)
     }, [map, data])
     const prevCallback = useCallback((layers: FeatureGroup) => {
         if(!map) return
 
         const dataLength = data?.length || 1
         const nextIndex = (index - 1 + dataLength ) % dataLength
+        moveMap(map, nextIndex, layers, setCurrentLayer, index)
         index = nextIndex
-        moveMap(map, nextIndex, layers, setCurrentLayer)
     }, [map, data])
 
     const getMinimapMarker = useMemo(() => {

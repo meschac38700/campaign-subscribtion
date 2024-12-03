@@ -1,6 +1,6 @@
 import {FeatureGroup, Icon, Map, Marker, LatLngExpression, MarkerOptions} from "leaflet";
 import Travel from "@/interfaces/travel";
-import {markerIcon} from "@/utils/maps";
+import {hasSameCoords, markerIcon} from "@/utils/maps";
 import {LayerFixed} from "@/interfaces/maps";
 import {Dispatch, SetStateAction} from "react";
 import {preventClickBehaviour} from "@/utils/click-vents";
@@ -40,9 +40,27 @@ export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (l
     }
     control.addTo(map);
 }
+
+function resetPreviousTravelPoint(map: Map, layers: LayerType, previousIndex: number | null) {
+    if (previousIndex === null) return;
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const previousLayer: LayerFixed = layers.getLayers()[previousIndex]
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const resetIcon = markerIcon(L, {
+        iconUrl: "https://img.icons8.com/stickers/50/active-state.png",
+        iconSize: [50, 50],
+        iconAnchor: [25, 50],
+    })
+    previousLayer.setIcon(resetIcon)
+}
+
 type SetterCallback =  Dispatch<SetStateAction<LayerFixed | null>>
 
-export function moveMap(map: Map, index: number, layers: LayerType, setCurrentPoint: SetterCallback, zoom: number=6) {
+export function moveMap(map: Map, index: number, layers: LayerType, setCurrentPoint: SetterCallback, previousIndex:  null | number=null, zoom: number=6) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const travelPoint: LayerFixed = layers.getLayers()[index]
@@ -53,6 +71,8 @@ export function moveMap(map: Map, index: number, layers: LayerType, setCurrentPo
         const icon = travelPoint.getIcon()
         icon.options.iconUrl = "https://img.icons8.com/stickers/50/user-male-circle-skin-type-3.png"
         travelPoint.setIcon(icon)
+        resetPreviousTravelPoint(map, layers, previousIndex)
+        travelPoint._bringToFront()
     })
 }
 
@@ -69,7 +89,7 @@ export function getTravelMarker(objId: number, position: LatLngExpression, L, ic
         iconSize: [50, 50],
         iconAnchor:[25,50],
     })
-    return L.marker(position, {icon, objId});
+    return new L.Marker(position, {icon, objId});
 }
 
 
