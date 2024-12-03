@@ -1,4 +1,4 @@
-import {FeatureGroup, Icon, Map, Marker, LatLngExpression} from "leaflet";
+import {FeatureGroup, Icon, Map, Marker, LatLngExpression, MarkerOptions} from "leaflet";
 import Travel from "@/interfaces/travel";
 import {markerIcon} from "@/utils/maps";
 import {LayerFixed} from "@/interfaces/maps";
@@ -53,16 +53,20 @@ export function moveMap(map: Map, index: number, layers: LayerType, setCurrentPo
     })
 }
 
+interface ExtendingMarkerOptions extends MarkerOptions {
+    objId: number;
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-export function getTravelMarker(position: LatLngExpression, L, iconUrl?: string): Marker{
+export function getTravelMarker(objId: number, position: LatLngExpression, L, iconUrl?: string): Marker<ExtendingMarkerOptions>{
 
     const icon = markerIcon(L, {
         iconUrl: iconUrl ?? "https://img.icons8.com/stickers/50/active-state.png",
         iconSize: [50, 50],
-        iconAnchor:[25,50]
+        iconAnchor:[25,50],
     })
-    return L.marker(position, {icon});
+    return L.marker(position, {icon, objId});
 }
 
 
@@ -78,7 +82,7 @@ export function getTravelLayers(data: Travel[], L, map: Map): LayerType {
         if(index === 0 || (index == arr.length - 1 && sameCoords) )
             iconUrl = "https://img.icons8.com/stickers/50/user-male-circle-skin-type-3.png"
 
-        defaultData.addLayer(getTravelMarker({lat: travel.lat, lng: travel.lng}, L, iconUrl))
+        defaultData.addLayer(getTravelMarker(travel.id, {lat: travel.lat, lng: travel.lng}, L, iconUrl))
         return defaultData
     }, defaultData)
 }

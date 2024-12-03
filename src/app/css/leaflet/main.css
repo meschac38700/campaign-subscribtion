@@ -7,7 +7,10 @@
 #minimap{
     height: 200px;
     width: min(400px, 100%);
-    margin: 0 auto;
+}
+
+.minimap-container .description {
+    flex: 600px 0 1;
 }
 
 /**************************************************************************************************

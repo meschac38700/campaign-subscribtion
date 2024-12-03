@@ -33,12 +33,19 @@ export default function Page(){
     }, [map, data])
 
     const minimapMarker = useMemo(() => {
-        if(!minimap) return;
-        const position = currentLayer?.getLatLng() ?? {lat: 45.166672, lng: 5.71667}
+        if(!minimap || !currentLayer) return;
+        const position = currentLayer.getLatLng() ?? {lat: 45.166672, lng: 5.71667}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        return getTravelMarker(position, L, "https://img.icons8.com/color/48/standing-man-skin-type-3.png")
+        return getTravelMarker(currentLayer.options.objId, position, L, "https://img.icons8.com/color/48/standing-man-skin-type-3.png")
     }, [minimap, currentLayer])
+
+    const currentTravelPoint = useMemo(() => {
+        if(!currentLayer) return null;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        return data?.find(travel => travel.id === currentLayer.options.objId)
+    }, [data, currentLayer])
 
     useEffect(() => {
         if (map) {
@@ -65,10 +72,22 @@ export default function Page(){
     }, [minimap, currentLayer]);
 
     return <div className="flex flex-col gap-3 h-full">
-        <div id="minimap"></div>
+        <div className="flex gap-3 justify-center minimap-container">
+            <div id="minimap" className="flex-none"></div>
+            {
+                currentTravelPoint
+                &&
+                <div className="description">
+                    <h4 className="text-2xl mb-2">{currentTravelPoint.name}</h4>
+                    <p>{currentTravelPoint.text}</p>
+                </div>
+            }
+        </div>
         <div id="map"></div>
+
+
         <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossOrigin="" defer></script>
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossOrigin="" defer></script>
     </div>
 }
