@@ -1,15 +1,19 @@
 "use client";
 import useLeafletMap from "@/hooks/map/use-leaflet-map";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import useFetch from "@/hooks/use-fetch";
 import Travel from "@/interfaces/travel";
-import {addTravelLegend, getTravelLayers, moveMap} from "@/lib/map/travel_layer";
+import {addTravelLegend, getTravelLayers, getTravelMarker, moveMap} from "@/lib/map/travel_layer";
 import {FeatureGroup} from "leaflet";
+import {LayerFixed} from "@/interfaces/maps";
 
 let index = 0
 
 export default function Page(){
-    const map = useLeafletMap(12);
+    const map = useLeafletMap({zoom: 12, geolocationEnabled: true});
+    const minimap = useLeafletMap({zoom: 14, htmlElementId: "minimap"});
+
+    const [currentLayer, setCurrentLayer] = useState<LayerFixed|null>(null);
     const {data} = useFetch<Travel[] | null>("/api/maps/travel", null)
 
     const nextCallback = useCallback((layers: FeatureGroup) => {
@@ -17,7 +21,7 @@ export default function Page(){
 
         const nextIndex = (index + 1 ) % (data?.length || 0)
         index = nextIndex
-        moveMap(map, nextIndex, layers)
+        moveMap(map, nextIndex, layers, setCurrentLayer)
     }, [map, data])
     const prevCallback = useCallback((layers: FeatureGroup) => {
         if(!map) return
@@ -25,8 +29,16 @@ export default function Page(){
         const dataLength = data?.length || 1
         const nextIndex = (index - 1 + dataLength ) % dataLength
         index = nextIndex
-        moveMap(map, nextIndex, layers)
+        moveMap(map, nextIndex, layers, setCurrentLayer)
     }, [map, data])
+
+    const minimapMarker = useMemo(() => {
+        if(!minimap) return;
+        const position = currentLayer?.getLatLng() ?? {lat: 45.166672, lng: 5.71667}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        return getTravelMarker(position, L, "https://img.icons8.com/color/48/standing-man-skin-type-3.png")
+    }, [minimap, currentLayer])
 
     useEffect(() => {
         if (map) {
@@ -39,15 +51,24 @@ export default function Page(){
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 addTravelLegend(map, layers, L, nextCallback, prevCallback)
-                moveMap(map, index, layers)
+                moveMap(map, index, layers, setCurrentLayer)
             }
         }
     }, [map, data]);
 
-    return <>
+    useEffect(() => {
+        if(minimap && currentLayer){
+            minimap.setView(currentLayer.getLatLng(), 16,)
+            if(minimapMarker)
+                minimapMarker.addTo(minimap)
+        }
+    }, [minimap, currentLayer]);
+
+    return <div className="flex flex-col gap-3 h-full">
+        <div id="minimap"></div>
         <div id="map"></div>
         <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossOrigin="" defer></script>
-    </>
+    </div>
 }

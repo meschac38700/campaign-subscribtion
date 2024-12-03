@@ -1,6 +1,13 @@
-#map{
+#map, #minimap{
     overflow: hidden;
-    height: 100%;
+}
+#map{
+    flex-grow: 1;
+}
+#minimap{
+    height: 200px;
+    width: min(400px, 100%);
+    margin: 0 auto;
 }
 
 /**************************************************************************************************

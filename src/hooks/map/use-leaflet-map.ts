@@ -3,9 +3,9 @@ import {LatLngLiteral, Map} from "leaflet";
 import {getUserPosition} from "@/utils/maps";
 
 
-type StateFn = Dispatch<SetStateAction<LatLngLiteral | undefined>>
+type StateFn = Dispatch<SetStateAction<LatLngLiteral | null>>
 
-function centerOnUserPosition(setterCallback: StateFn, prevCoords?: LatLngLiteral) {
+function centerOnUserPosition(setterCallback: StateFn, prevCoords: null | LatLngLiteral) {
     if(prevCoords){
         return
     }
@@ -20,13 +20,23 @@ function centerOnUserPosition(setterCallback: StateFn, prevCoords?: LatLngLitera
 }
 
 export default function useLeafletMap(
-    zoom: number,
-    position?: LatLngLiteral,
+    {
+        zoom=5,
+        position=null,
+        htmlElementId="map",
+        geolocationEnabled = false,
+    }: {zoom: number, position?: null | LatLngLiteral, htmlElementId?: string, geolocationEnabled?: boolean}
 ){
-    const [userPosition, setUserPosition] = useState<LatLngLiteral | undefined>(position)
+    const [userPosition, setUserPosition] = useState<LatLngLiteral | null>(position)
     const [map, setMap] = useState<Map>();
     useEffect(() => {
-        centerOnUserPosition(setUserPosition, userPosition)
+        if(geolocationEnabled)
+            centerOnUserPosition(setUserPosition, userPosition)
+        else
+            setUserPosition({lat: 45.166672, lng: 5.71667})
+    }, []);
+
+    useEffect(() => {
         if(!userPosition) return
 
         try{
@@ -38,7 +48,7 @@ export default function useLeafletMap(
             })
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
-            setMap(L.map('map', {layers: [rootLayer]}).setView(userPosition, zoom));
+            setMap(L.map(htmlElementId, {layers: [rootLayer]}).setView(userPosition, zoom));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         }catch(_: unknown){
             window.location.reload();

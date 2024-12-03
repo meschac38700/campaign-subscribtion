@@ -1,6 +1,8 @@
-import {FeatureGroup, Icon, Map, Marker, Layer, LatLngExpression} from "leaflet";
+import {FeatureGroup, Icon, Map, Marker, LatLngExpression} from "leaflet";
 import Travel from "@/interfaces/travel";
 import {markerIcon} from "@/utils/maps";
+import {LayerFixed} from "@/interfaces/maps";
+import {Dispatch, SetStateAction} from "react";
 
 
 type LayerType = FeatureGroup<Marker<Icon>>
@@ -35,17 +37,13 @@ export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (l
     }
     control.addTo(map);
 }
+type SetterCallback =  Dispatch<SetStateAction<LayerFixed | null>>
 
-interface LayerFixed extends Layer {
-    getLatLng: () => LatLngExpression;
-    getIcon: () => Icon;
-    setIcon: (icon: Icon) => void;
-}
-
-export function moveMap(map: Map, index: number, layers: LayerType, zoom: number=6) {
+export function moveMap(map: Map, index: number, layers: LayerType, setCurrentPoint: SetterCallback, zoom: number=6) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const travelPoint: LayerFixed = layers.getLayers()[index]
+    setCurrentPoint(travelPoint);
 
     map.flyTo(travelPoint.getLatLng(), zoom)
     map.once("moveend", function() {
@@ -57,13 +55,14 @@ export function moveMap(map: Map, index: number, layers: LayerType, zoom: number
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-function getMarker(data: Travel, L, iconUrl?: string): Marker{
+export function getTravelMarker(position: LatLngExpression, L, iconUrl?: string): Marker{
+
     const icon = markerIcon(L, {
         iconUrl: iconUrl ?? "https://img.icons8.com/stickers/50/active-state.png",
         iconSize: [50, 50],
         iconAnchor:[25,50]
     })
-    return L.marker([data.lat, data.lng], {icon});
+    return L.marker(position, {icon});
 }
 
 
@@ -79,7 +78,7 @@ export function getTravelLayers(data: Travel[], L, map: Map): LayerType {
         if(index === 0 || (index == arr.length - 1 && sameCoords) )
             iconUrl = "https://img.icons8.com/stickers/50/user-male-circle-skin-type-3.png"
 
-        defaultData.addLayer(getMarker(travel, L, iconUrl))
+        defaultData.addLayer(getTravelMarker({lat: travel.lat, lng: travel.lng}, L, iconUrl))
         return defaultData
     }, defaultData)
 }
