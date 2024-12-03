@@ -3,6 +3,7 @@ import Travel from "@/interfaces/travel";
 import {markerIcon} from "@/utils/maps";
 import {LayerFixed} from "@/interfaces/maps";
 import {Dispatch, SetStateAction} from "react";
+import {preventClickBehaviour} from "@/utils/click-vents";
 
 
 type LayerType = FeatureGroup<Marker<Icon>>
@@ -23,6 +24,8 @@ export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (l
 
         const prev = div.querySelector("#prev");
         const next = div.querySelector("#next");
+        div.addEventListener("click", preventClickBehaviour);
+        div.addEventListener("dblclick", preventClickBehaviour);
         prev.addEventListener("click", (e: MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
