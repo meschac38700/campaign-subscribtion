@@ -10,7 +10,7 @@ import {LayerFixed} from "@/interfaces/maps";
 let index = 0
 
 export default function Page(){
-    const map = useLeafletMap({zoom: 12, geolocationEnabled: true});
+    const map = useLeafletMap({zoom: 12});
     const minimap = useLeafletMap({zoom: 14, htmlElementId: "minimap"});
 
     const [currentLayer, setCurrentLayer] = useState<LayerFixed|null>(null);
