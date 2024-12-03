@@ -4,7 +4,7 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import useFetch from "@/hooks/use-fetch";
 import Travel from "@/interfaces/travel";
 import {addTravelLegend, getTravelLayers, getTravelMarker, moveMap} from "@/lib/map/travel_layer";
-import {FeatureGroup} from "leaflet";
+import {FeatureGroup, Marker} from "leaflet";
 import {LayerFixed} from "@/interfaces/maps";
 
 let index = 0
@@ -13,6 +13,7 @@ export default function Page(){
     const map = useLeafletMap({zoom: 12});
     const minimap = useLeafletMap({zoom: 14, htmlElementId: "minimap"});
 
+    const [minimapMarker, setMinimapMarker] = useState<Marker | null>(null)
     const [currentLayer, setCurrentLayer] = useState<LayerFixed|null>(null);
     const {data} = useFetch<Travel[] | null>("/api/maps/travel", null)
 
@@ -32,12 +33,14 @@ export default function Page(){
         moveMap(map, nextIndex, layers, setCurrentLayer)
     }, [map, data])
 
-    const minimapMarker = useMemo(() => {
-        if(!minimap || !currentLayer) return;
+    const getMinimapMarker = useMemo(() => {
+        if((!minimap || !currentLayer) || minimapMarker) return minimapMarker;
         const position = currentLayer.getLatLng() ?? {lat: 45.166672, lng: 5.71667}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        return getTravelMarker(currentLayer.options.objId, position, L, "https://img.icons8.com/color/48/standing-man-skin-type-3.png")
+        const marker = getTravelMarker(currentLayer.options.objId, position, L, "https://img.icons8.com/color/48/standing-man-skin-type-3.png")
+        setMinimapMarker(marker)
+        return marker
     }, [minimap, currentLayer])
 
     const currentTravelPoint = useMemo(() => {
@@ -66,8 +69,10 @@ export default function Page(){
     useEffect(() => {
         if(minimap && currentLayer){
             minimap.setView(currentLayer.getLatLng(), 16,)
-            if(minimapMarker)
-                minimapMarker.addTo(minimap)
+            if(!minimapMarker && getMinimapMarker)
+                getMinimapMarker.addTo(minimap)
+            else
+                minimapMarker?.setLatLng(currentLayer.getLatLng()).addTo(minimap)
         }
     }, [minimap, currentLayer]);
 
