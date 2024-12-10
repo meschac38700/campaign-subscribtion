@@ -10,12 +10,10 @@ type LayerType = FeatureGroup<Marker<Icon>>
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (layers: LayerType) => void, prevCallback: (layers: LayerType) => void){
-    const control = L.control({position: 'bottomleft'})
+export function getTravelLegend(map: Map, layers: LayerType, L, nextCallback: (layers: LayerType) => void, prevCallback: (layers: LayerType) => void){
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    control.onAdd = function(_) {
+    return function(_: Map) {
         const div = L.DomUtil.create("div", "legend storyLegend");
         div.innerHTML = `
             <button id="prev">Précédent</button>
@@ -38,7 +36,6 @@ export function addTravelLegend(map: Map, layers: LayerType, L, nextCallback: (l
         });
         return div
     }
-    control.addTo(map);
 }
 
 function resetPreviousTravelPoint(map: Map, layers: LayerType, previousIndex: number | null) {

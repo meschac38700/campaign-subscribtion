@@ -3,8 +3,8 @@ import useLeafletMap from "@/hooks/map/use-leaflet-map";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import useFetch from "@/hooks/use-fetch";
 import Travel from "@/interfaces/travel";
-import {addTravelLegend, getTravelLayers, getTravelMarker, moveMap} from "@/lib/map/travel_layer";
-import {FeatureGroup, Marker} from "leaflet";
+import {getTravelLegend, getTravelLayers, getTravelMarker, moveMap} from "@/lib/map/travel_layer";
+import {FeatureGroup, Marker, Map} from "leaflet";
 import {LayerFixed} from "@/interfaces/maps";
 
 let index = 0
@@ -12,6 +12,8 @@ let index = 0
 export default function Page(){
     const map = useLeafletMap({zoom: 12});
     const minimap = useLeafletMap({zoom: 14, htmlElementId: "minimap"});
+
+    const [legendFn, setLegendFn] = useState<null | ((_: Map) => HTMLDivElement)>(null);
 
     const [minimapMarker, setMinimapMarker] = useState<Marker | null>(null)
     const [currentLayer, setCurrentLayer] = useState<LayerFixed|null>(null);
@@ -55,12 +57,21 @@ export default function Page(){
             if (data?.length){
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
+
                 const layers = getTravelLayers(data, L, map)
                 map.fitBounds(layers.getBounds())
+                if(legendFn === null) {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    const control = L.control({position: 'bottomleft'})
 
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                addTravelLegend(map, layers, L, nextCallback, prevCallback)
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    const fn = getTravelLegend(map, layers, L, nextCallback, prevCallback)
+                    setLegendFn(fn)
+                    control.onAdd = fn
+                    control.addTo(map)
+                }
                 moveMap(map, index, layers, setCurrentLayer)
             }
         }
