@@ -68,7 +68,7 @@ const markCurrentUserPosition = (map: Map) => {
 }
 
 export default function Page(){
-    const map = useLeafletMap(12);
+    const map = useLeafletMap({zoom: 12});
     const {data} = useFetch<PartialEstablishment[] | null>("/api/gouv/establishments", null)
 
     useEffect(() => {
@@ -86,7 +86,7 @@ export default function Page(){
     }, [map, data]);
 
     return <>
-        <div id="map"></div>
+        <div id="map" className="h-full"></div>
         <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossOrigin="" defer></script>
